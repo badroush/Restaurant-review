@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home Page!{% endblock %}
+{% block stylesheets %}
+    {{ encore_entry_link_tags('app') }}
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+
+{% endblock %}
+{% block body %}
+<div class="example-wrapper">
+   <body>
+   
+     {{ include('header/index.html.twig') }} 
+    <section id="accueil" class="hero">
+        <h2>Bienevenu au Booking Restaurant</h2>
+        <p>Votre plaisir de manger</p>
+        <main class="container">
+
+    <!-- Recherche par code postal -->
+    <div class="row my-5">
+        <div class="col-md-6 mx-auto">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Rechercher Restaurant">
+                <button class="btn btn-primary" type="button">
+                   <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meilleurs restaurants -->
+    <h2 class="text-center mb-4">les meilleur restaurants</h2>
+    <div class="restaurant-list row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-3 g-4" align-items-justify>
+    {% for restaurant in restaurants %}
+        <div class="col" >
+            <div class="card h-100">
+                <img src="{{ restaurant.imageurl }}" class="card-img-top" alt="{{ restaurant.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ restaurant.name }}</h5>
+                    <div class="mb-3">
+                        {% for i in 1..restaurant.averageRating %}
+                            ⭐
+                        {% endfor %}
+                    </div>
+                    <a href="{{ path('restaurant_details', {'id': restaurant.id}) }}" class="btn btn-primary">Voir plus</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+</main>
+    </section>
+    {{ include('footer/index.html.twig') }}
+</div>
+{% endblock %}

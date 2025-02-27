@@ -1,0 +1,30 @@
+.star-rating input[type="radio"] {
+  display: none;
+}
+.star-rating .star {
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #ddd;
+  transition: color 0.2s;
+}
+.star-rating input[type="radio"]:checked ~ .star {
+  color: #ffc107;
+}
+.star-rating .star:hover,
+.star-rating .star:hover ~ .star {
+  color: #ffc107;
+}
+.card-text {
+  text-align: justify;
+}
+.card-title {
+  text-align: center;
+}
+.card-mtitle {
+  text-align: center;
+}
+.posted-at {
+  text-align: left !important;
+  color: gray;
+  margin-block-end: auto;
+}
