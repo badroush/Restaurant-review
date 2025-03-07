@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+{{ include('header/index.html.twig') }} 
+    <div class="container mt-5 d-flex justify-content-center">
+        <div class="card shadow-lg p-4" style="width: 100%;">
+            <h1 class="text-center mb-4">Inscription</h1>
+
+            {{ form_start(registrationForm) }}
+                {{ form_row(registrationForm._token) }} <!-- ✅ Affiche le champ CSRF -->
+            <div class="mb-3 row">
+                <label for="nom" class="col-sm-4 col-form-label">Nom</label>
+                <div class="col-sm-8">
+                    {{ form_widget(registrationForm.nom, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="email" class="col-sm-4 col-form-label">Email</label>
+                <div class="col-sm-8">
+                    {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label for="plainPassword" class="col-sm-4 col-form-label">Mot de passe</label>
+                <div class="col-sm-8">
+                    {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <div class="col-sm-4">&nbsp;</div>
+                <div class="col-sm-8">
+                    <div class="form-check">
+                        {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                        <label class="form-check-label" for="agreeTerms">J'accepte les conditions</label>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
+               
+            </div>Vous ete deja inscrit ? <a href="{{ path('app_login') }}"> Connexion</a>
+             {{ form_end(registrationForm, {'render_rest': false}) }}
+        </div>
+    </div>
+    <div class="text-center mt-3">
+        
+    </div>
+    {{ include('footer/index.html.twig') }} 
+{% endblock %}

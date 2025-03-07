@@ -8,11 +8,22 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RestaurantDetailsController extends AbstractController
 {
-    #[Route('/restaurant/details', name: 'app_restaurant_details')]
-    public function index(): Response
+    #[Route('/commentaire', name: 'app_commentaire', methods: ['POST'])]
+    public function ajouterCommentaire(Request $request, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('restaurant_details/index.html.twig', [
-            'controller_name' => 'RestaurantDetailsController',
-        ]);
+        dump($request);
+        $contenu = $request->request->get('comment');
+        if ($contenu) {
+            $commentaire = new Commentaire();
+            $commentaire->setContenu($contenu);
+            $entityManager->persist($commentaire);
+            $entityManager->flush();
+            $this->addFlash('success', 'Commentaire ajouté avec succès !');
+        } else {
+            $this->addFlash('error', 'Le commentaire ne peut pas être vide.');
+        }
+
+        return $this->redirectToRoute('app_commentaire');
     }
+
 }

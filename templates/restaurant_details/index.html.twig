@@ -48,10 +48,21 @@
     {% endif %}
     </div>
     <!-- Formulaire d'avis -->
+{% if app.user %}
+                 {# <li>Bienvenue, {{ app.user.nom }}</li>
+                <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
+                {% else %}
+                <li><a href="{{ path('app_login') }}">Se connecter</a></li>
+                <li><a href="{{ path('app_register') }}">S'inscrire</a></li> #}
+               
+
+
+
+
     <div class="card">
         <div class="card-body">
             <h3 class="card-title mb-4">Ajouter un avis</h3>
-            <form>
+            <form action="{{ path('app_commentaire') }}" method="post">
                 <div class="mb-3">
                     <label class="form-label">Note</label>
                     <div class="star-rating">
@@ -71,10 +82,15 @@
                     <label for="comment" class="form-label">Commentaire</label>
                     <textarea class="form-control" id="comment" rows="3"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Envoyer l'avis</button>
+                <a type="submit" class="btn btn-primary">Envoyer l'avis</a>
             </form>
         </div>
+        {% for message in app.flashes('success') %}
+    <p style="color: green;">{{ message }}</p>
+{% endfor %}
     </div>
+ {% endif %}
+
 </main>
     {{ include('footer/index.html.twig') }}
 {% endblock %}
