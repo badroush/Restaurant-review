@@ -15,6 +15,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[UniqueEntity(fields: ['id'], message: 'There is already an account with this id')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
+    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -53,11 +55,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $profilePicture = null;
 
+    /**
+     * @var Collection<int, Like>
+     */
+    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'user')]
+    private Collection $likes;
+
+
     public function __construct()
     {
         $this->restaurants = new ArrayCollection();
         $this->roles = ['ROLE_USER']; // Valeur par défaut
         $this->evaluations = new ArrayCollection();
+        $this->setProfilePicture('default.png'); // Utilisation du setter
+        $this->restaurant = new ArrayCollection();
+        $this->likes = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -220,6 +233,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfilePicture(string $profilePicture): static
     {
         $this->profilePicture = $profilePicture;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Like>
+     */
+
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+    public function addLike(Like $like): static
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes->add($like);
+            $like->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(Like $like): static
+    {
+        if ($this->likes->removeElement($like)) {
+            // set the owning side to null (unless already changed)
+            if ($like->getUser() === $this) {
+                $like->setUser(null);
+            }
+        }
 
         return $this;
     }

@@ -41,9 +41,17 @@ class Restaurants
     #[ORM\OneToMany(targetEntity: Evaluation::class, mappedBy: 'restaurant', cascade: ['persist', 'remove'])]
     private Collection $evaluations;
 
+    /**
+     * @var Collection<int, Like>
+     */
+    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'restaurant')]
+    private Collection $likes;
+
+    
     public function __construct()
     {
         $this->evaluations = new ArrayCollection();
+        $this->likes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -143,4 +151,54 @@ class Restaurants
         }
         return $this;
     }
+
+    /**
+     * @return Collection<int, Like>
+     */
+    public function getLikesCount(): int
+{
+    return count($this->likes);  // Assurez-vous que la propriété "likes" est correctement définie
+}
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(Like $like): static
+    {
+        if (!$this->likes->contains($like)) {
+            $this->likes->add($like);
+            $like->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLike(Like $like): static
+    {
+        if ($this->likes->removeElement($like)) {
+            // set the owning side to null (unless already changed)
+            if ($like->getRestaurant() === $this) {
+                $like->setRestaurant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    // src/Entity/Restaurant.php
+
+    public function isLikedByUser(?User $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+        foreach ($this->likes as $like) {
+            if ($like->getUser()->getId() === $user->getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

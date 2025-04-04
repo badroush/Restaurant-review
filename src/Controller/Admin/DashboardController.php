@@ -2,6 +2,10 @@
 
 namespace App\Controller\Admin;
 use App\Entity\Restaurants;
+use App\Entity\User;
+use App\Entity\RestoCategories;
+use App\Entity\Like;
+use App\Entity\Evaluation;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -33,5 +37,9 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
          yield MenuItem::linkToCrud('Restaurants', 'fas fa-list', Restaurants::class);
+         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-list', User::class);
+         yield MenuItem::linkToCrud('Categories', 'fas fa-list', RestoCategories::class);
+         yield MenuItem::linkToCrud('Gestion des jaimes', 'fas fa-list', Like::class);
+         yield MenuItem::linkToCrud('Gestion des Commenatires', 'fas fa-list', Evaluation::class);
     }
 }

@@ -51,7 +51,7 @@ class Evaluation
         return $this->rating;
     }
 
-    public function setRating(int $Rating): static
+    public function setRating(int $rating): static
     {
         $this->rating = $rating;
         return $this;
@@ -62,11 +62,11 @@ class Evaluation
         return $this->datePublication;
     }
 
-    public function setDatePublication(\DateTimeImmutable $datePublication): static
-    {
-        $this->datePublication = $datePublication;
-        return $this;
-    }
+    public function setDatePublication(?\DateTimeImmutable $datePublication = null): static
+{
+    $this->datePublication = $datePublication ?? new \DateTimeImmutable();
+    return $this;
+}
 
     public function getRestaurant(): ?Restaurants
     {

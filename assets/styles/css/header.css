@@ -1,19 +1,11 @@
-/* Général */
-body {
-  font-family: "Arial", sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f9f9f9;
-}
-
-/* Header */
+/* Style de base */
 .header-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #1a0c07; /* Orange clair */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px 20px;
+  background: #222;
+  color: white;
 }
 
 .logo-title {
@@ -22,86 +14,82 @@ body {
 }
 
 .logo {
-  width: 50px;
-  height: auto;
-  margin-right: 1rem;
+  height: 50px;
+  margin-right: 10px;
 }
 
-h1 {
-  color: white;
-  font-size: 1.8rem;
-  margin: 0;
-}
-
-/* Navigation */
 .nav-links {
-  list-style: none;
   display: flex;
-  gap: 1.5rem;
-  padding: 0;
-  margin: 0;
+  list-style: none;
+  gap: 20px;
+}
+
+.nav-links li {
+  position: relative;
 }
 
 .nav-links a {
   text-decoration: none;
   color: white;
-  font-weight: bold;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  transition: background 0.3s ease;
-}
-
-.nav-links a:hover {
-  background-color: #ff6347; /* Rouge orangé */
+  font-size: 16px;
 }
 
 /* Dropdown */
-.dropdown {
-  position: relative;
-}
-
-.dropbtn {
-  cursor: pointer;
-  font-weight: bold;
-}
-
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: white;
+  background: #444;
   min-width: 150px;
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
-  top: 100%;
-  right: 0;
-  z-index: 10;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
 }
 
 .dropdown-content a {
-  color: #333;
-  padding: 10px 15px;
+  padding: 10px;
   display: block;
-  text-decoration: none;
-  transition: background 0.3s ease;
+  color: white;
 }
 
-.dropdown-content a:hover {
-  background-color: #f4f4f4;
+/* MENU BURGER pour mobile */
+.burger-menu {
+  display: none;
+  font-size: 24px;
+  cursor: pointer;
 }
 
-/* Affichage au survol */
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-.dropdown-content {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.3s ease;
-}
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+  .burger-menu {
+    display: block;
+  }
 
-.dropdown:hover .dropdown-content {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
+  .nav-links-container {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: #222;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .nav-links a {
+    font-size: 18px;
+    padding: 10px;
+    display: block;
+  }
+
+  .nav-links-container.active {
+    display: block;
+  }
 }

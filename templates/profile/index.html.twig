@@ -3,21 +3,20 @@
 {% block title %}Profil de {{ app.user.nom }}{% endblock %}
 
 {% block body %}
-     {{ include('header/index.html.twig') }} 
+    {{ include('header/index.html.twig') }} 
+
     <div class="container">
+        <!-- Partie gauche : Photo + Nom + Email -->
         <div class="profile-header">
-            <div class="profile-card">
-                <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}" alt="Photo de profil" class="profile-picture">
-                <h2>{{ app.user.nom }}</h2>
-                <p>{{ app.user.email }}</p>
-                <p>{{ app.user.roles|join(', ') }}</p>
-                <div class="profile-actions">
-                    <a href="#" class="btn btn-primary">Modifier le profil</a>
-                    <a href="{{ path('app_logout') }}" class="btn btn-secondary">Se déconnecter</a>
-                </div>
+            <img src="{{ asset('build/img/' ~ app.user.profilePicture) }}" alt="Photo de profil" class="profile-picture">
+            <h2>{{ app.user.nom }}</h2>
+            <div class="profile-actions">
+                <a href="#" class="btn btn-primary">Modifier le profil</a>
+                <a href="{{ path('app_logout') }}" class="btn btn-secondary">Se déconnecter</a>
             </div>
         </div>
 
+        <!-- Partie droite : Infos personnelles et mot de passe -->
         <div class="profile-info">
             <div class="info-card">
                 <h3>Informations personnelles</h3>
@@ -40,6 +39,7 @@
             </div>
         </div>
     </div>
-         {{ include('footer/index.html.twig') }} 
+
+    {{ include('footer/index.html.twig') }} 
 
 {% endblock %}

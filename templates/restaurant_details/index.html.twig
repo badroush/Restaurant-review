@@ -1,88 +1,91 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello RestaurantDetailsController!{% endblock %}
+{% block title %}Détails du Restaurant{% endblock %}
+
 {% block stylesheets %}
     {{ encore_entry_link_tags('app') }}
- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
 {% endblock %}
+
 {% block body %}
 {{ include('header/index.html.twig') }}
+
 <main class="container my-5">
-    <!-- En-tête du restaurant -->
-    <div class="text-center mb-5">
-        <h1 class="mb-4">{{restaurant.name}}</h1>
-        <img src="{{restaurant.imageurl}}" style="max-width: 100%; height: auto;">
-    </div>
-    <!-- Description -->
-    <div class="card mb-5">
-        <div class="card-body">
-            <h2 class="card-title mb-3">Description</h2>
-            <p class="card-text" style="text-align: justify; font-size: 20px">{{restaurant.description}} </div>
-    </div>
-    <!-- Avis clients -->
-    <h2 class="mb-4">Avis Clients</h2>
-    <!-- Liste des avis -->
-    <div class="row g-4 mb-5">
-        <!-- Avis clients -->
-        {% if evaluations|length > 0 %}
-        {% for evaluation in evaluations %}
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="card-mtitle mb-0">{{evaluation.user.nom}}</h5>
-                        <div class="star-rating">
-                           {% for i in 1..evaluation.rating %}
-                            ⭐
-                        {% endfor %}
+
+    <!-- Conteneur de la publication -->
+    <div class="restaurant-post">
+
+        <!-- En-tête avec le nom -->
+                            <div class="position-relative">
+                                <!-- Image du restaurant -->
+                                <img src="{{ restaurant.imageurl }}" class="card-img-top" alt="{{ restaurant.name }}">
+                            </div>
+                            <br>
+                             <div class="card-body">
+                                <h5 class="card-title fw-bold">{{ restaurant.name }}</h5>
+                                    {{restaurant.description}}
+                            </div>
+       <hr>
+        <!-- Avis Clients -->
+        <div class="comment-section">
+            <h3>Avis Clients</h3> <hr>
+            {% if evaluations|length > 0 %}
+                {% for evaluation in evaluations %}
+                    <div class="comment">
+                        <img src="{{ asset('build/img/' ~ evaluation.user.profilePicture) }}" alt="User">
+                        
+                        <div class="comment-content">
+                            <div class="comment-container">
+                            <div class="left">
+                                <div class="comment-author">{{ evaluation.user.nom }}</div>
+                                <div class="star-rating">{% for i in 1..evaluation.rating %}⭐{% endfor %}</div>
+                            </div>
+                            <div class="right">
+                                <small class="text-muted">{{ evaluation.datePublication | date('d/m/Y') }}</small>
+                            </div>
+                        </div>
+
+                            <div class="comment-text">{{ evaluation.commentaire }}</div>
+                            
                         </div>
                     </div>
-                    <p class="card-text">{{evaluation.commentaire}}</p>
-                    <small class="posted-at" style="color: gray" align="left">Posté le {{evaluation.datePublication | date('d/m/Y')}}</small>
-                </div>
-            </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucun avis pour ce restaurant.</p>
+            {% endif %}
         </div>
-{% endfor %}
- {% else %}
-        <p>Aucun avis pour ce restaurant.</p>
-    {% endif %}
-    </div>
-    <!-- Formulaire d'avis -->
-{% if app.user %}
-    <div class="card">
-        <div class="card-body">
-            <h3 class="card-title mb-4">Ajouter un avis</h3>
-            <form action="{{ path('app_commentaire') }}" method="post">
-                <div class="mb-3">
-                    <label class="form-label">Note</label>
-                    <div class="star-rating">
-                        <input type="radio" id="5-stars" name="rating" value="5">
-                        <label for="5-stars" class="star"><i class="fas fa-star"></i></label>
-                        <input type="radio" id="4-stars" name="rating" value="4">
-                        <label for="4-stars" class="star"><i class="fas fa-star"></i></label>
-                        <input type="radio" id="3-stars" name="rating" value="3">
-                        <label for="3-stars" class="star"><i class="fas fa-star"></i></label>
-                        <input type="radio" id="2-stars" name="rating" value="2">
-                        <label for="2-stars" class="star"><i class="fas fa-star"></i></label>   
-                        <input type="radio" id="1-star" name="rating" value="1">
-                        <label for="1-star" class="star"><i class="fas fa-star"></i></label>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="comment" class="form-label">Commentaire</label>
-                    <textarea class="form-control" id="comment" rows="3"></textarea>
-                </div>
-                <a type="submit" class="btn btn-primary">Envoyer l'avis</a>
-            </form>
+
+        <!-- Formulaire d'ajout d'avis -->
+        {% if app.user %}
+            <div class="comment-form">
+    <form action="{{ path('app_commentaire') }}" method="post">
+        <input type="hidden" name="restaurant_id" value="{{ restaurant.id }}">
+
+        <!-- Système d'évaluation par étoiles -->
+        <div class="rating">
+            <input type="radio" id="star5" name="rating" value="5" />
+            <label for="star5" title="5 étoiles">&#9733;</label>
+            <input type="radio" id="star4" name="rating" value="4" />
+            <label for="star4" title="4 étoiles">&#9733;</label>
+            <input type="radio" id="star3" name="rating" value="3" />
+            <label for="star3" title="3 étoiles">&#9733;</label>
+            <input type="radio" id="star2" name="rating" value="2" />
+            <label for="star2" title="2 étoiles">&#9733;</label>
+            <input type="radio" id="star1" name="rating" value="1" />
+            <label for="star1" title="1 étoile">&#9733;</label>
         </div>
-        {% for message in app.flashes('success') %}
-    <p style="color: green;">{{ message }}</p>
-{% endfor %}
+
+        <input type="text" name="comment" placeholder="Ajoutez votre avis...">
+        <button type="submit"><i>Envoyer</i></button>
+    </form>
+</div>
+        {% else %}
+            <p style="color: red; text-align: center;">Veuillez vous connecter pour ajouter un avis. <a href="{{ path('app_login') }}">Se connecter</a></p>
+        {% endif %}
+
     </div>
-  {% else %}
-    <p style="color: red; background-color: lightgray; width: 100%;">Veillez se connecter pour ajouter un avis <a href="{{ path('app_login') }}">se connecter</a></p>
-{% endif %}
 
 </main>
-    {{ include('footer/index.html.twig') }}
+
+{{ include('footer/index.html.twig') }}
 {% endblock %}
