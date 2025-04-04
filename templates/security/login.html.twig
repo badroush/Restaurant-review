@@ -10,7 +10,7 @@
             {% endif %}
 
             <form method="post" action="{{ path('app_login') }}">
-             {{ csrf_token('authenticate') }}
+             {# {{ csrf_token('authenticate') }} #}
                 <div class="mb-3 row">
                     <label for="username" class="col-sm-4 col-form-label">Email</label>
                     <div class="col-sm-8">

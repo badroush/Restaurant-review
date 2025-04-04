@@ -23,7 +23,7 @@
     <h2 class="mb-4">Avis Clients</h2>
     <!-- Liste des avis -->
     <div class="row g-4 mb-5">
-        <!-- Avis 1 -->
+        <!-- Avis clients -->
         {% if evaluations|length > 0 %}
         {% for evaluation in evaluations %}
         <div class="col-12">
@@ -49,16 +49,6 @@
     </div>
     <!-- Formulaire d'avis -->
 {% if app.user %}
-                 {# <li>Bienvenue, {{ app.user.nom }}</li>
-                <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
-                {% else %}
-                <li><a href="{{ path('app_login') }}">Se connecter</a></li>
-                <li><a href="{{ path('app_register') }}">S'inscrire</a></li> #}
-               
-
-
-
-
     <div class="card">
         <div class="card-body">
             <h3 class="card-title mb-4">Ajouter un avis</h3>
@@ -89,7 +79,9 @@
     <p style="color: green;">{{ message }}</p>
 {% endfor %}
     </div>
- {% endif %}
+  {% else %}
+    <p style="color: red; background-color: lightgray; width: 100%;">Veillez se connecter pour ajouter un avis <a href="{{ path('app_login') }}">se connecter</a></p>
+{% endif %}
 
 </main>
     {{ include('footer/index.html.twig') }}

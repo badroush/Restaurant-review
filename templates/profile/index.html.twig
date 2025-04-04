@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil de {{ app.user.nom }}{% endblock %}
+
+{% block body %}
+     {{ include('header/index.html.twig') }} 
+    <div class="container">
+        <div class="profile-header">
+            <div class="profile-card">
+                <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}" alt="Photo de profil" class="profile-picture">
+                <h2>{{ app.user.nom }}</h2>
+                <p>{{ app.user.email }}</p>
+                <p>{{ app.user.roles|join(', ') }}</p>
+                <div class="profile-actions">
+                    <a href="#" class="btn btn-primary">Modifier le profil</a>
+                    <a href="{{ path('app_logout') }}" class="btn btn-secondary">Se déconnecter</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-info">
+            <div class="info-card">
+                <h3>Informations personnelles</h3>
+                <p><strong>Nom complet:</strong> {{ app.user.nom }}</p>
+                <p><strong>Email:</strong> {{ app.user.email }}</p>
+                <p><strong>Rôle:</strong> {{ app.user.roles|join(', ') }}</p>
+            </div>
+
+            <div class="info-card">
+                <h3>Changer le mot de passe</h3>
+                <form action="{{ path('app_reset_password') }}" method="post">
+                    <label for="current_password">Mot de passe actuel</label>
+                    <input type="password" id="current_password" name="current_password" required>
+
+                    <label for="new_password">Nouveau mot de passe</label>
+                    <input type="password" id="new_password" name="new_password" required>
+
+                    <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                </form>
+            </div>
+        </div>
+    </div>
+         {{ include('footer/index.html.twig') }} 
+
+{% endblock %}

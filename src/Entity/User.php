@@ -50,6 +50,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Evaluation::class, mappedBy: 'user')]
     private Collection $evaluations;
 
+    #[ORM\Column(length: 255)]
+    private ?string $profilePicture = null;
+
     public function __construct()
     {
         $this->restaurants = new ArrayCollection();
@@ -205,6 +208,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $evaluation->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getProfilePicture(): ?string
+    {
+        return $this->profilePicture;
+    }
+
+    public function setProfilePicture(string $profilePicture): static
+    {
+        $this->profilePicture = $profilePicture;
 
         return $this;
     }
