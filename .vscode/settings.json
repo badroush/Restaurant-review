@@ -4,5 +4,10 @@
     "**/*.scss",
     "**/*.sass",
     "**/*.ts"
-  ]
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": false,
+  "[twig]": {
+    "editor.defaultFormatter": "mblode.twig-language-2"
+  }
 }

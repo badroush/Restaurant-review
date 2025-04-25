@@ -54,4 +54,17 @@ class EvaluationRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    // src/Repository/EvaluationRepository.php
+
+public function countByRestaurant($restaurant)
+{
+    return $this->createQueryBuilder('e')
+                ->select('COUNT(e.id)')
+                ->where('e.restaurant = :restaurant')
+                ->setParameter('restaurant', $restaurant)
+                ->getQuery()
+                ->getSingleScalarResult();
+}
+
 }

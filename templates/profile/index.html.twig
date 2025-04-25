@@ -1,22 +1,36 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Profil de {{ app.user.nom }}{% endblock %}
+{% block stylesheets %}
+    <style>
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+       
+    </style> 
+    {{ encore_entry_link_tags('app') }}
+{% endblock %}
 
 {% block body %}
-    {{ include('header/index.html.twig') }} 
+    {{ include('header/index.html.twig') }}
 
     <div class="container">
-        <!-- Partie gauche : Photo + Nom + Email -->
-        <div class="profile-header">
-            <img src="{{ asset('build/img/' ~ app.user.profilePicture) }}" alt="Photo de profil" class="profile-picture">
+        <div class="profile-header text-center">
+           <img src="{{ asset('uploads/photoprofile/' ~ app.user.profilePicture) }}"
+            alt="Photo de profil"
+            class="profile-picture"
+            style="cursor: pointer;"
+            onclick="changeProfilePicture()" />
+
             <h2>{{ app.user.nom }}</h2>
             <div class="profile-actions">
-                <a href="#" class="btn btn-primary">Modifier le profil</a>
                 <a href="{{ path('app_logout') }}" class="btn btn-secondary">Se déconnecter</a>
             </div>
         </div>
 
-        <!-- Partie droite : Infos personnelles et mot de passe -->
         <div class="profile-info">
             <div class="info-card">
                 <h3>Informations personnelles</h3>
@@ -40,6 +54,73 @@
         </div>
     </div>
 
-    {{ include('footer/index.html.twig') }} 
+    {{ include('footer/index.html.twig') }}
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+function changeProfilePicture() {
+     Swal.fire('Changement de photo', 'Tu as cliqué sur la photo !', 'info');
+    const inputId = 'upload-image-input';
+
+    Swal.fire({
+        title: 'Changer votre photo de profil',
+        html: `
+            <input type="file" id="${inputId}" class="swal2-file" accept="image/*" onchange="previewImage(event)" />
+            <img id="image-preview" src="" alt="Aperçu" style="display:none; width: 100%; max-height: 250px; object-fit: contain; margin-top: 10px;" />
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Envoyer',
+        cancelButtonText: 'Annuler',
+        preConfirm: () => {
+            const fileInput = document.getElementById(inputId);
+            const file = fileInput.files[0];
+
+            if (!file) {
+                Swal.showValidationMessage('Veuillez sélectionner une image.');
+                return false;
+            }
+
+            const formData = new FormData();
+            formData.append('profilePicture', file);
+console.log(formData);
+            return fetch('{{ path('app_upload_profile_picture') }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) throw new Error(response.statusText);
+                return response.json();
+            })
+            .catch(error => {
+                Swal.showValidationMessage(`Erreur : ${error}`);
+            });
+        }
+    }).then(result => {
+        if (result.isConfirmed) {
+            Swal.fire('Succès !', 'Votre photo a été mise à jour.', 'success').then(() => {
+                window.location.reload(); // recharge l’image
+            });
+        }
+    });
+}
+
+function previewImage(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('image-preview');
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            preview.src = reader.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.src = '';
+        preview.style.display = 'none';
+    }
+}
+</script>
 
 {% endblock %}

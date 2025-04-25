@@ -4,10 +4,32 @@
 
 {% block body %}
 {{ include('header/index.html.twig') }}
-<section id="contact">
-        <h2>Contact</h2>
-        <p>Réservez votre table dès maintenant.</p>
-    </section>
+
+<div class="container py-5">
+    <h2 class="mb-4">Contactez-nous</h2>
+
+    <p class="mb-4">Vous avez une question ou souhaitez suggérer un restaurant ? N'hésitez pas à nous écrire !</p>
+
+    <form method="post" action="{{ path('app_contact') }}">
+        <div class="mb-3">
+            <label for="name" class="form-label">Nom</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Adresse e-mail</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="message" class="form-label">Message</label>
+            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+</div>
+
         {{ include('footer/index.html.twig') }} 
 
 {% endblock %}

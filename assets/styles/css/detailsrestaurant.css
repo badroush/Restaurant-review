@@ -25,6 +25,16 @@
   align-items: center;
 }
 
+.card-img-top {
+  /* Assurez-vous que l'image respecte des proportions rectangulaires */
+  object-fit: cover; /* Pour que l'image remplisse le conteneur sans distorsion */
+  width: 100%; /* Adaptez la largeur selon vos besoins */
+  height: auto; /* La hauteur s'ajustera proportionnellement */
+  max-height: 300px; /* Définissez une hauteur maximale si nécessaire */
+  border-radius: 5px; /* Pour des bords légèrement arrondis (facultatif) */
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Crée un effet d'ombre pour le relief */
+}
+
 .restaurant-name {
   font-size: 16px;
   font-weight: bold;

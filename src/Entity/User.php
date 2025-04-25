@@ -40,11 +40,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    /**
-     * @var Collection<int, Restaurants>
-     */
-    #[ORM\OneToMany(targetEntity: Restaurants::class, mappedBy: 'user_id', orphanRemoval: true)]
-    private Collection $restaurants;
+    #[ORM\OneToMany(targetEntity: Restaurants::class, mappedBy: 'user')]
+private Collection $restaurants;
 
     /**
      * @var Collection<int, Evaluation>
@@ -68,7 +65,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->roles = ['ROLE_USER']; // Valeur par défaut
         $this->evaluations = new ArrayCollection();
         $this->setProfilePicture('default.png'); // Utilisation du setter
-        $this->restaurant = new ArrayCollection();
         $this->likes = new ArrayCollection();
 
     }

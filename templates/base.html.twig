@@ -18,6 +18,24 @@
         <h1>
 Bienvenue
         </h1>
+
         {% endblock %}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <script>
+            Swal.fire({
+                position: "top-end",
+                title: '{{ label|capitalize }}',
+                text: '{{ message }}',
+                icon: '{{ label == "success" ? "success" : (label == "error" ? "error" : "info") }}',
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+        </script>
+    {% endfor %}
+{% endfor %}
+
     </body>
 </html>

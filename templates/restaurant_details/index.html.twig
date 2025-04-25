@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block body %}
+
 {{ include('header/index.html.twig') }}
 
 <main class="container my-5">
@@ -18,7 +19,7 @@
         <!-- En-tête avec le nom -->
                             <div class="position-relative">
                                 <!-- Image du restaurant -->
-                                <img src="{{ restaurant.imageurl }}" class="card-img-top" alt="{{ restaurant.name }}">
+                                <img src="{{ asset(restaurant.imageurl ? 'uploads/restaurants/' ~ restaurant.imageurl : 'uploads/defaults.png') }}" class="card-img-top" alt="{{ restaurant.name }}">
                             </div>
                             <br>
                              <div class="card-body">
@@ -32,8 +33,7 @@
             {% if evaluations|length > 0 %}
                 {% for evaluation in evaluations %}
                     <div class="comment">
-                        <img src="{{ asset('build/img/' ~ evaluation.user.profilePicture) }}" alt="User">
-                        
+                     <img src="{{ asset(evaluation.user.profilePicture ? 'uploads/photoprofile/' ~ evaluation.user.profilePicture : 'uploads/photoprofile/default.png') }}" class="card-img-top" alt="{{ evaluation.user.nom }}">
                         <div class="comment-content">
                             <div class="comment-container">
                             <div class="left">
@@ -42,6 +42,17 @@
                             </div>
                             <div class="right">
                                 <small class="text-muted">{{ evaluation.datePublication | date('d/m/Y') }}</small>
+                               {% if evaluation.user and app.user and evaluation.user.id == app.user.id %}
+                                <button 
+    class="btn btn-sm delete-comment"
+    data-comment-id="{{ evaluation.id }}"
+    data-url="{{ path('comment_delete', {'id': evaluation.id}) }}"
+    data-token="{{ csrf_token('delete-comment') }}"
+>
+    <span class="fas fa-trash"></span>
+</button>
+                                {% endif %}
+
                             </div>
                         </div>
 
@@ -88,4 +99,77 @@
 </main>
 
 {{ include('footer/index.html.twig') }}
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    document.querySelectorAll('.delete-comment').forEach(button => {
+    button.addEventListener('click', function() {
+        console.log(this.dataset);
+        const url = this.dataset.url; // Récupère l'URL de la requête
+        const commentElement = this.closest('.comment'); // Trouve l'élément du commentaire dans le DOM
+console.log("URL: " + url); // Vérifie que l'URL est correcte
+console.log("Méthode: DELETE");
+        Swal.fire({
+            title: 'Êtes-vous sûr ?',
+            text: "Cette action est irréversible !",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Oui, supprimer !',
+            cancelButtonText: 'Annuler'
+        }).then((result) => {
+  if (result.isConfirmed) {
+    fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            _token: this.dataset.token
+        })
+    })
+    .then(async response => {
+        console.log("HTTP Status:", response.status);
+        const data = await response.json().catch(() => null);
+        console.log("Response JSON:", data);
+        
+        if (response.ok) {
+            Swal.fire('Supprimé!', data.message, 'success');
+            commentElement.remove();
+        } else {
+            Swal.fire('Erreur', data ? data.message : 'Erreur interne serveur', 'error');
+        }
+    })
+    .catch(err => {
+        console.error('Fetch Error:', err);
+        Swal.fire('Erreur', 'La suppression a échoué.', 'error');
+    });
+}
+
+
+        });
+    });
+});
+
+    </script>
 {% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{# {{ dump(app.flashes) }} #}
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <script>
+            Swal.fire({
+                icon: '{{ label == 'success' ? 'success' : (label == 'error' ? 'error' : 'info') }}',
+                title: '{{ label|capitalize }}',
+                text: '{{ message }}',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    {% endfor %}
+{% endfor %}
+
+{% endblock %}
+

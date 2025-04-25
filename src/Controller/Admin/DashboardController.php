@@ -36,10 +36,26 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-         yield MenuItem::linkToCrud('Restaurants', 'fas fa-list', Restaurants::class);
-         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-list', User::class);
-         yield MenuItem::linkToCrud('Categories', 'fas fa-list', RestoCategories::class);
-         yield MenuItem::linkToCrud('Gestion des jaimes', 'fas fa-list', Like::class);
-         yield MenuItem::linkToCrud('Gestion des Commenatires', 'fas fa-list', Evaluation::class);
+        yield MenuItem::linkToDashboard('Tableau de bord', 'fa fa-home');
+
+        if ($this->isGranted('ROLE_ADMIN')) {
+            //  revenir a la page home
+            yield MenuItem::linkToUrl('Retour à la page d accueil', 'fa fa-home', '/');
+            yield MenuItem::linkToCrud('Restaurants', 'fas fa-list', Restaurants::class);
+            yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-list', User::class);
+            yield MenuItem::linkToCrud('Categories', 'fas fa-list', RestoCategories::class);
+            yield MenuItem::linkToCrud('Gestion des jaimes', 'fas fa-list', Like::class);
+            yield MenuItem::linkToCrud('Gestion des Commentaires', 'fas fa-list', Evaluation::class);
+            yield MenuItem::linkToUrl('Statistiques', 'fas fa-chart-bar', $this->generateUrl('admin_statistics'));
+
+        }
+    
+        if ($this->isGranted('ROLE_RESTAURATEUR')) {
+            //  revenir a la page home
+            yield MenuItem::linkToUrl('Retour à la page d accueil', 'fa fa-home', '/');
+            yield MenuItem::linkToCrud('Mes Restaurants', 'fas fa-list', Restaurants::class);
+            yield MenuItem::linkToCrud('Mes Likes', 'fas fa-list', Like::class);
+            yield MenuItem::linkToCrud('Mes Commentaires', 'fas fa-list', Evaluation::class);
+        }
     }
 }

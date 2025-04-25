@@ -1,74 +1,132 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Home Page!{% endblock %}
+{% block title %}Home Page!
+{% endblock %}
 {% block stylesheets %}
-    {{ encore_entry_link_tags('app') }}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+<style>
+/* Assurez-vous que ces styles sont présents */
+#data-section {
+    display: flex;
+    /* Initialement caché */
+    flex-wrap: wrap;
+    /* Important pour le système de grille */
+}
+
+#data-section.show {
+    display: flex;
+    /* S'affiche quand il y a des résultats */
+}
+</style>
+{{ encore_entry_link_tags('app') }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
 {% endblock %}
 
 {% block body %}
 <div class="example-wrapper">
-    {{ include('header/index.html.twig') }} 
+    {{ include('header/index.html.twig') }}
 
     <section id="accueil" class="hero">
         <main class="container">
             <!-- Recherche -->
             <div class="row my-5">
-                <div class="col-md-6 mx-auto">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Rechercher Restaurant">
-                        <button class="btn btn-primary" type="button">
-                           <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
+    <div class="col-md-6 mx-auto">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Rechercher Restaurant">
+            <button class="btn btn-primary search-button" type="button">
+                <i class="fas fa-search"></i>
+            </button>
+            <div class="dropdown ms-2">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Filtrer
+                </button>
+             <ul class="dropdown-menu">
+    <li><a class="dropdown-item filter-option" data-filter="all" href="#">Tous les restaurants</a></li>
+    <li><a class="dropdown-item filter-option" data-filter="best-rated" href="#">Meilleur évalué</a></li>
+    <li><a class="dropdown-item filter-option" data-filter="most-commented" href="#">Le plus commenté</a></li>
+    <li><a class="dropdown-item filter-option" data-filter="top-8" href="#">Top 8 notés</a></li>
+</ul>
 
-            <!-- Meilleurs restaurants -->
-            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
-                {% for restaurant in restaurants %}
-    <div class="col">
-        <div class="card h-100">
-
-                 <div class="position-relative">
-                <img src="{{ restaurant.imageurl }}" class="card-img-top" alt="{{ restaurant.name }}">
-                <div class="position-absolute top-0 start-0 p-0">
-                    <span class="badge bg-primary">{{ restaurant.name }}   {% for i in 1..restaurant.averageRating %}
-                                     <span>⭐</span> 
-                                     {% endfor %}</span>
-                   
-                    </div>
-                </div>
-            <!-- ... autres éléments du card ... -->
-            <div class="card-footer bg-white border-0">
-    <div class="d-flex justify-content-between align-items-center text-muted">
-    <span class="restaurant-likes-count" data-restaurant-id="{{ restaurant.id }}">
-        {{ restaurant.likesCount }} j'aime
-    </span>
-    <span class="restaurant-comment-count" data-restaurant-id="{{ restaurant.id }}">
-        {{ restaurant.commentCount }} Commentaire{{ restaurant.commentCount != 1 ? 's' : '' }}
-    </span>
-</div>
-                <hr class="my-2">
-<div class="d-flex justify-content-around">
-    <button class="btn btn-light text-muted like-button" 
-        data-restaurant-id="{{ restaurant.id }}"
-        data-liked="{{ restaurant.isLikedByUser ? 'true' : 'false' }}">
-        <span class="like-icon">
-        {{ restaurant.isLikedByUser ? '❤️' : '👍' }}
-         </span>
-        <span class="like-text"> J'aime</span>
-        {# (<span class="likes-count">{{ restaurant.likesCount }}</span>) #}
-</button>
-
-    <a class="btn btn-light text-muted" href="{{ path('restaurant_details', {'id': restaurant.id}) }}">
-        💬 plus
-    </a>
-</div>
             </div>
         </div>
     </div>
-{% endfor %}
+</div>
+
+            <!-- Meilleurs restaurants -->
+            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4" id="data-section">
+                {% if error is defined %}
+                <div class="alert alert-danger">
+                    {{ error }}
+                </div>
+                {% endif %}
+
+                {% for restaurant in restaurants %}
+                <div class="col">
+                   <div class="card h-100">
+    <div class="position-relative">
+        <a href="{{ path('restaurant_details', {'id': restaurant.id}) }}">
+            <img src="{{ asset(restaurant.imageurl ? 'uploads/restaurants/' ~ restaurant.imageurl : 'uploads/defaults.png') }}"
+                alt="Photo de restaurant"
+                class="restaurant-image">
+        </a>
+
+        <div class="position-absolute top-0 start-0 p-0">
+            <a href="{{ path('restaurant_details', {'id': restaurant.id}) }}" class="text-decoration-none text-white">
+                <span class="badge bg-primary">
+                    {{ restaurant.name }}
+                    {% for i in 1..restaurant.averageRating %}
+                        <span>⭐</span>
+                    {% endfor %}
+                </span>
+            </a>
+        </div>
+    </div>
+
+    <!-- ... autres éléments du card ... -->
+    <div class="card-footer bg-white border-0">
+        <div class="d-flex justify-content-between align-items-center text-muted">
+            <span class="restaurant-likes-count" data-restaurant-id="{{ restaurant.id }}">
+                {{ restaurant.likesCount }} j'aime
+            </span>
+            <span class="restaurant-comment-count" data-restaurant-id="{{ restaurant.id }}">
+                {{ restaurant.commentCount }} Commentaire{{ restaurant.commentCount != 1 ? 's' : '' }}
+            </span>
+        </div>
+        <hr class="my-2">
+        <div class="d-flex justify-content-around">
+            <button class="btn btn-light text-muted like-button"
+                data-restaurant-id="{{ restaurant.id }}"
+                data-liked="{{ restaurant.isLikedByUser ? 'true' : 'false' }}">
+                <span class="like-icon">
+                    {{ restaurant.isLikedByUser ? '❤️' : '👍' }}
+                </span>
+                <span class="like-text">J'aime</span>
+            </button>
+
+            <a class="btn btn-light text-muted"
+                href="{{ path('restaurant_details', {'id': restaurant.id}) }}">
+                💬 plus
+            </a>
+        </div>
+    </div>
+</div>
+
+                </div>
+                {% endfor %}
+            </div>
+            <div id="no-results-message" class="alert alert-info mt-3" style="display: none;">
+                Aucun restaurant trouvé pour votre recherche.
+            </div>
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div id="noResultsToast" class="toast align-items-center text-bg-info border-0" role="alert"
+                    aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            Aucun résultat trouvé.
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                            aria-label="Close"></button>
+                    </div>
+                </div>
             </div>
         </main>
     </section>
@@ -77,45 +135,292 @@
 </div>
 {% endblock %}
 {% block javascripts %}
-   <script>
+ {{ encore_entry_script_tags('app') }}
+<script>
 document.addEventListener('DOMContentLoaded', function() {
-document.querySelectorAll('.like-button').forEach(button => {
-    button.addEventListener('click', async function(e) {
-        e.preventDefault();
-        
-        const restaurantId = this.dataset.restaurantId;
-        const icon = this.querySelector('.like-icon');
-        
-        try {
-            const response = await fetch(`/like/${restaurantId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({
-                    _token: '{{ csrf_token('like') }}'
-                })
-            });
-
-            const data = await response.json();
-            
-            if (data.success) {
-                // Mise à jour du bouton
-                icon.textContent = data.isLiked ? '❤️' : '👍';
-                this.dataset.liked = data.isLiked;
-                
-                // Mise à jour du compteur dans la div
-                document.querySelectorAll(`.restaurant-likes-count[data-restaurant-id="${restaurantId}"]`)
-                    .forEach(span => {
-                        span.textContent = `${data.likesCount} j'aime`;
+    document.querySelectorAll('.search-button').forEach(span => {
+        span.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const searchInput = document.querySelector('.form-control');
+            const searchValue = searchInput.value.trim();
+            const searchUrl = `/search?q=${searchValue}`;
+            const dataSection = document.getElementById('data-section');
+            const noResultsMsg = document.getElementById('no-results-message');
+            if (searchValue === '') {
+                dataSection.style.display = 'none';
+                //noResultsMsg.style.display = 'block';
+                //noResultsMsg.textContent = 'Veuillez entrer un terme de recherche';
+                fetch('/alert/empty_field')
+                    .then(response => response.json())
+                    .then(data => {
+                        Swal.fire({
+                            position: data.position,
+                            icon: data.icon,
+                            title: data.title,
+                            text: data.text,
+                            showConfirmButton: data.showConfirmButton,
+                            timer: data.timer
+                        }).then(() => {
+                            if (data.redirectRoute) {
+                                window.location.href = data.redirectRoute;
+                            }
+                        });
                     });
             }
-        } catch (error) {
-            console.error('Error:', error);
+            if (searchValue.length > 3) {
+                try {
+                    const response = await fetch(`/search?q=${
+encodeURIComponent(searchValue)
+}`);
+                    const restaurants = await response.json();
+                    dataSection.innerHTML = '';
+                    if (restaurants.length > 0) {
+                        restaurants.forEach(restaurant => {
+                            const cardHtml = `
+<div class="col">
+	<div class="card h-100">
+		<div class="position-relative">
+<img src="${restaurant.imageurl || '/images/default.jpg'}" class="card-img-top" alt="${restaurant.name}">
+<div class="position-absolute top-0 start-0 p-0">
+<span class="badge bg-primary">
+					${
+restaurant.name
+}
+					${
+'⭐'.repeat(Math.round(restaurant.averageRating || 0))
+}
+				</span>
+			</div>
+		</div>
+		<div class="card-footer bg-white border-0">
+			<div class="d-flex justify-content-between align-items-center text-muted">
+				<span>${restaurant.likesCount || 0} j'aime</span><span>${restaurant.commentCount || 0
+} Commentaire${
+restaurant.commentCount !== 1 ? 's' : ''
+}</span>
+			</div>
+			<hr class="my-2">
+			<div class="d-flex justify-content-around">
+				<button class="btn btn-light text-muted like-button" data-restaurant-id="${ restaurant.id }" data-liked="${ restaurant.isLikedByUser ? 'true' : 'false' }">
+					<span class="like-icon">
+				${ restaurant.isLikedByUser ? '❤️' : '👍' }
+				</span>
+				<span class="like-text">
+				J'aime</span>
+				</button>
+				<a href="/restaurant/${
+restaurant.id
+}" class="btn btn-light text-muted">
+					💬 plus
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+                `;
+                            dataSection.innerHTML += cardHtml;
+                        });
+                        dataSection.style.display = 'flex';
+                        noResultsMsg.style.display = 'none';
+                    } else {
+                        dataSection.style.display = 'none';
+                        fetch('/alert/no_result')
+                            .then(response => response.json())
+                            .then(data => {
+                                Swal.fire({
+                                    position: data.position,
+                                    icon: data.icon,
+                                    title: data.title,
+                                    text: data.text,
+                                    showConfirmButton: data.showConfirmButton,
+                                    timer: data.timer
+                                }).then(() => {
+                                    if (data.redirectRoute) {
+                                        window.location.href = data
+                                            .redirectRoute;
+                                    }
+                                });
+                            });
+
+
+                    }
+                } catch (error) {
+                    fetch('/alert/error')
+                        .then(response => response.json())
+                        .then(data => {
+                            Swal.fire({
+                                position: data.position,
+                                icon: data.icon,
+                                title: data.title,
+                                text: data.text,
+                                showConfirmButton: data.showConfirmButton,
+                                timer: data.timer
+                            }).then(() => {
+                                if (data.redirectRoute) {
+                                    window.location.href = data
+                                        .redirectRoute;
+                                }
+                            });
+                        });
+                }
+            }
+        });
+    });
+});
+document.addEventListener('DOMContentLoaded', function() {
+    // Délégation d'événements pour gérer les clicks sur les boutons like
+    document.addEventListener('click', async function(e) {
+        // Vérifie si le click vient d'un bouton like ou de ses enfants
+        const likeButton = e.target.closest('.like-button');
+        console.log('likeButton:', likeButton);
+        if (likeButton) {
+            e.preventDefault();
+            const restaurantId = likeButton.dataset.restaurantId;
+            const icon = likeButton.querySelector('.like-icon');
+            try {
+                // Envoi de la requête AJAX
+                const response = await fetch(`/like/${restaurantId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        _token: '{{ csrf_token("like") }}'
+                    })
+                });
+                if (!response.ok) throw new Error('Erreur réseau');
+                const data = await response.json();
+                const lc = data.likesCount;
+
+                if (data.success) {
+                    // Mise à jour de l'icône
+                    icon.textContent = data.isLiked ? '❤️' : '👍';
+                    likeButton.dataset.liked = data.isLiked;
+                    // Mise à jour du compteur
+                    console.log('likesCount:', lc);
+                    document.querySelectorAll(
+                            `.restaurant-likes-count[data-restaurant-id="${restaurantId}"]`)
+                        .forEach(span => {
+                            // console.log('span:', span);
+                            span.textContent = `${data.likesCount} j'aime`;
+                        });
+                }
+            } catch (error) {
+                fetch('/alert/not_connected')
+                    .then(response => response.json())
+                    .then(data => {
+                        Swal.fire({
+                            position: data.position,
+                            title: data.title,
+                            text: data.text,
+                            icon: data.icon,
+                            timer: data.timer
+                        })
+                    })
+                    .catch(error => console.error('Erreur:', error));
+
+
+            }
         }
     });
 });
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.filter-option').forEach(option => {
+        option.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const filterValue = this.dataset.filter;
+            const dataSection = document.getElementById('data-section');
+            const noResultsMsg = document.getElementById('no-results-message');
+            try {
+                 const response = await fetch(`/filtre?f=${
+encodeURIComponent(filterValue)
+}`);
+               // const restaurants = await response.json(); 
+               const text = await response.text();
+console.log('Raw response:', text);
+const restaurants = JSON.parse(text);
+console.log('Parsed restaurants:', restaurants);
+                dataSection.innerHTML = '';
+                if (restaurants.length > 0) {
+                    console.log('RESTAURANTS DATA:', restaurants);
+                    restaurants.forEach(restaurant => {
+                        const cardHtml = `
+<div class="col">
+	<div class="card h-100">
+		<div class="position-relative">
+<img src="${restaurant.imageurl || '/images/default.jpg'}" class="card-img-top" alt="${restaurant.name}">
+<div class="position-absolute top-0 start-0 p-0">
+<span class="badge bg-primary">
+${restaurant.name}
+${'⭐'.repeat(Math.round(restaurant.averageRating || 0))}
+</span>
+</div>
+</div>
+<div class="card-footer bg-white border-0">
+<div class="d-flex justify-content-between align-items-center text-muted">
+<span>${restaurant.likesCount || 0} j'aime</span>
+<span>${restaurant.commentCount || 0} Commentaire${restaurant.commentCount !== 1 ? 's' : ''}</span>
+</div>
+<hr class="my-2">
+<div class="d-flex justify-content-around">
+<button class="btn btn-light text-muted like-button" data-restaurant-id="${restaurant.id}" data-liked="${restaurant.isLikedByUser ? 'true' : 'false'}">
+<span class="like-icon">${restaurant.isLikedByUser ? '❤️' : '👍'}</span>
+<span class="like-text">J'aime</span>
+</button>
+<a href="/restaurant/${restaurant.id}" class="btn btn-light text-muted">💬 plus</a>
+</div>
+</div>
+</div>
+</div>`;
+                        dataSection.innerHTML += cardHtml;
+                    });
+                    dataSection.style.display = 'flex';
+                    noResultsMsg.style.display = 'none';
+                } else {
+                    dataSection.style.display = 'none';
+                    fetch('/alert/no_result')
+                        .then(response => response.json())
+                        .then(data => {
+                            Swal.fire({
+                                position: data.position,
+                                icon: data.icon,
+                                title: data.title,
+                                text: data.text,
+                                showConfirmButton: data.showConfirmButton,
+                                timer: data.timer
+                            }).then(() => {
+                                if (data.redirectRoute) {
+                                    window.location.href = data.redirectRoute;
+                                }
+                            });
+                        });
+                }
+            } catch (error) {
+                fetch('/alert/error')
+                    .then(response => response.json())
+                    .then(data => {
+                        Swal.fire({
+                            position: data.position,
+                            icon: data.icon,
+                            title: data.title,
+                            text: data.text,
+                            showConfirmButton: data.showConfirmButton,
+                            timer: data.timer
+                        }).then(() => {
+                            if (data.redirectRoute) {
+                                window.location.href = data.redirectRoute;
+                            }
+                        });
+                    });
+            }
         });
+    });
+});
+
 </script>
 {% endblock %}

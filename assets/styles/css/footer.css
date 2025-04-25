@@ -1,6 +1,11 @@
 /* Style de base du footer */
 .footer-container {
   display: flex;
+  position: fixed;
+  display: flex;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
   padding: 20px;

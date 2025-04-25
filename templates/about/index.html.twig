@@ -2,9 +2,51 @@
 {% block title %}About Page!{% endblock %}
 {% block body %}
 {{ include('header/index.html.twig') }}
-<section id="apropos">
-        <h2>À Propos</h2>
-        <p>Nous servons des plats faits maison avec des ingrédients frais.</p>
-    </section>
+<div class="container py-5">
+    <h2 class="mb-4">À propos de Booking Restaurant</h2>
+
+    <p>
+        <strong>Booking Restaurant</strong> est une plateforme innovante de mise en relation entre les amateurs de gastronomie et les établissements culinaires de qualité en France.
+        Notre objectif est de simplifier la recherche, la réservation et la découverte de restaurants, tout en offrant une expérience utilisateur fluide, agréable et fiable.
+    </p>
+
+    <h4 class="mt-4">Notre mission</h4>
+    <p>
+        Nous croyons que la restauration est bien plus qu’un simple repas : c’est une expérience, une émotion, un moment de partage. 
+        Notre mission est de permettre à chacun de trouver rapidement un établissement adapté à ses envies, ses goûts et son budget.
+    </p>
+
+    <h4 class="mt-4">Ce que nous offrons</h4>
+    <ul>
+        <li>Un <a href="{{ path('app_home') }}">accès simplifié</a> à une large sélection de restaurants triés sur le volet.</li>
+        <li>Des profils détaillés de chaque établissement avec photos, menus, avis, et systèmes de notation.</li>
+        <li>Une fonctionnalité de <a href="{{ path('app_contact') }}">prise de contact directe</a> avec les restaurateurs.</li>
+        <li>Une interface moderne pour gérer votre compte, consulter votre <a href="{{ path('app_profile') }}">profil</a> ou modifier vos informations personnelles.</li>
+    </ul>
+
+    <h4 class="mt-4">Pour les restaurateurs</h4>
+    <p>
+        Booking Restaurant offre également aux restaurateurs la possibilité de valoriser leur savoir-faire, d'accroître leur visibilité et de gérer leur présence en ligne. 
+        Grâce à notre interface <a href="{{ path('admin') }}">d'administration</a>, ils peuvent facilement mettre à jour leur carte, répondre aux avis, et suivre leurs statistiques.
+    </p>
+
+    <h4 class="mt-4">Une communauté active</h4>
+    <p>
+        Notre plateforme repose sur une communauté engagée de gourmets qui partagent leurs retours d’expérience. 
+        Chaque utilisateur peut "liker" un restaurant, commenter une visite, ou recommander des établissements à ses amis.
+    </p>
+
+    <h4 class="mt-4">Contactez-nous</h4>
+    <p>
+        Vous souhaitez en savoir plus ? Vous avez des suggestions ou souhaitez signaler un problème ? 
+        N'hésitez pas à consulter notre page <a href="{{ path('app_contact') }}">Contact</a>. Notre équipe se fera un plaisir de vous répondre dans les plus brefs délais.
+    </p>
+
+    <h4 class="mt-4">Merci pour votre confiance</h4>
+    <p>
+        Que vous soyez restaurateur, fin gourmet, ou simple curieux, nous vous remercions de faire partie de cette aventure.
+        Ensemble, continuons à valoriser la richesse et la diversité culinaire de nos régions.
+    </p>
+</div>
     {{ include('footer/index.html.twig') }}
 {% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques des Likes et Commentaires{% endblock %}
+
+{% block body %}
+{{ include('header/index.html.twig') }}
+    <h1>Statistiques des Likes et Commentaires</h1>
+
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',  // Type de graphique (barres dans cet exemple)
+                data: {
+                    labels: {{ restaurantNames|map(r => r)|json_encode|raw }}, // Restaurant Names
+                    datasets: [{
+                        label: 'Nombre de Commentaires',
+                        data: {{ commentsCount|json_encode|raw }},  // Données des commentaires depuis le backend
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Nombre de Likes',
+                        data: {{ likesCount|json_encode|raw }},  // Données des likes depuis le backend
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+     {{ include('footer/index.html.twig') }} 
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}

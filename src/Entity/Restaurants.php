@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Evaluation;
+use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: RestaurantsRepository::class)]
 class Restaurants
@@ -47,11 +48,15 @@ class Restaurants
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'restaurant')]
     private Collection $likes;
 
-    
+    #[ORM\ManyToOne(inversedBy: 'evaluations')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->evaluations = new ArrayCollection();
         $this->likes = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -155,13 +160,14 @@ class Restaurants
     /**
      * @return Collection<int, Like>
      */
-    public function getLikesCount(): int
-{
-    return count($this->likes);  // Assurez-vous que la propriété "likes" est correctement définie
-}
     public function getLikes(): Collection
     {
         return $this->likes;
+    }
+
+    public function getLikesCount(): int
+    {
+        return count($this->likes);
     }
 
     public function addLike(Like $like): static
@@ -186,7 +192,17 @@ class Restaurants
         return $this;
     }
 
-    // src/Entity/Restaurant.php
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
 
     public function isLikedByUser(?User $user): bool
     {
@@ -200,5 +216,8 @@ class Restaurants
         }
         return false;
     }
-
+    public function __toString(): string
+{
+    return $this->name ?? 'Restaurant'; // ou toute autre propriété utile
+}
 }

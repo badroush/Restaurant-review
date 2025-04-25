@@ -28,6 +28,7 @@ class Evaluation
     private ?Restaurants $restaurant = null;
 
     #[ORM\ManyToOne(inversedBy: 'evaluations')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
     public function getId(): ?int
